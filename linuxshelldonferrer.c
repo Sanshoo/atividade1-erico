@@ -17,20 +17,29 @@ struct args {
 
 
 
-void showHist(char *hist[],int args_counter){
-    if(args_counter == 0){
-        printf("\nNo commands in history!");
+// void showHist(char *hist[],int args_counter){
+//     if(args_counter == 0){
+//         printf("\nNo commands in history!");
+//     }
+//     else {
+//         for(int i = 0;i < args_counter;i++){
+//             int j = 0;
+//             while(hist[i][j] != '\n' || hist[i][j] != '0' || hist[i][j] != '\0'){
+//                 printf("%c",hist[i][j]);
+//                 j++;
+//             }
+//             printf('\n');
+//         }
+//     }
+// }
+
+void showHist(char *args[], int actual){
+    int i = actual;
+    int j = 1;
+    while(i != actual){
+        if(args[i]) printf("%d %s",j++, args[i]);
     }
-    else {
-        for(int i = 0;i < args_counter;i++){
-            int j = 0;
-            while(hist[i][j] != '\n' || hist[i][j] != '0' || hist[i][j] != '\0'){
-                printf("%c",hist[i][j]);
-                j++;
-            }
-            printf('\n');
-        }
-    }
+    return 0;
 }
 
 char *getString()
@@ -104,10 +113,6 @@ char *getCommandType(char *command){
     return NULL;
 }
 
-// char *getCommandArguments(char *command){a
-//     char *
-// }
-
 char commandGetter(){
     char *args[MAX_LINE/2+1];
     int args_counter = 0;
@@ -115,60 +120,34 @@ char commandGetter(){
 
     while(TRUE){
 
-        printf("osh>");
+        printf("Give The Idea Comparsa>");
+
+        fflush(stdout);
         char *command = getString();
         args_counter++;
-        char *commandtype = getCommandType(command);
-        char **splitted_command = spliter(command);
 
-        // strcpy(command,args[args_counter]);
-        // strcpy(args_hist[0],command);
+        char **splitted_command = spliter(command);
 
         char quit [6] = "quit()"; 
         if (compareStrings(command,quit)){
             printf("\nQuitting..");
             free(command);
-            // free(commandtype);
             return 0;
         }
 
         pid_t pid;
         pid = fork();
 
-        // if (compareStrings(command,"history")){
-        //     showHist(args_hist, args_counter);
-        // }
-        
-        // printf("%s",command);
-        // printf("%s",commandtype);
-        // printf("%s",args_hist[0]);
-
-
         if(pid < 0) {
             fprintf(stderr,"fork failed");
         }
         else if(pid == 0) {
-            if(compareStrings(command,"ls")){
-                char *argsss[] = {"ls","-l",NULL};
-                execvp(splitted_command[0],splitted_command);
-            }
-            // system(command);
-            // if(commandtype == NULL){
-            //     execvp(command,command);
-            // }
-            // else{
-            //     execvp(commandtype,command);
-            // }
+            execvp(splitted_command[0],splitted_command);
         }
-        // else if(pid == 0){
-        //     execvp(command,command);
-        // }
         else {
             wait(NULL);
-            // printf("child completed");
         }   
         free(command);
-        // free(commandtype);
     }
 }
 
