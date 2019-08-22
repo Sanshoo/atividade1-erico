@@ -140,7 +140,7 @@ char commandGetter(){
         // }
         else {
             wait(NULL);
-            printf("child completed");
+            // printf("child completed");
         }   
         // free(command);
         free(commandtype);
