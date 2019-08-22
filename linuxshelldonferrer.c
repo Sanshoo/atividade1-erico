@@ -16,6 +16,7 @@ struct args {
 }args;
 
 
+
 void showHist(char *hist[],int args_counter){
     if(args_counter == 0){
         printf("\nNo commands in history!");
@@ -74,6 +75,21 @@ int compareStrings(char *text1, char *text2){ // Function to compare strings
     return result;
 }
 
+void **spliter(char *command){
+    char *p;
+    p = strtok (command," ");
+    char **splitted_command = (char *)malloc(sizeof(char)*10);
+    int count = 0;
+    while (p!= NULL)
+    {
+        // printf ("%s\n",p);
+        splitted_command[count] = p;
+        p = strtok (NULL, " ");
+        count++;
+    }
+    return splitted_command;
+}
+
 char *getCommandType(char *command){
     int len = length(command);
 
@@ -95,7 +111,7 @@ char *getCommandType(char *command){
 char commandGetter(){
     char *args[MAX_LINE/2+1];
     int args_counter = 0;
-    char args_hist[12][MAX_LINE];
+    char *args_hist[12][MAX_LINE];
 
     while(TRUE){
 
@@ -103,24 +119,25 @@ char commandGetter(){
         char *command = getString();
         args_counter++;
         char *commandtype = getCommandType(command);
+        char **splitted_command = spliter(command);
 
         // strcpy(command,args[args_counter]);
-        strcpy(args_hist[args_counter],command);
+        // strcpy(args_hist[0],command);
 
         char quit [6] = "quit()"; 
         if (compareStrings(command,quit)){
             printf("\nQuitting..");
             free(command);
-            free(commandtype);
+            // free(commandtype);
             return 0;
         }
 
         pid_t pid;
         pid = fork();
 
-        if (compareStrings(command,"history")){
-            showHist(args_hist, args_counter);
-        }
+        // if (compareStrings(command,"history")){
+        //     showHist(args_hist, args_counter);
+        // }
         
         // printf("%s",command);
         // printf("%s",commandtype);
@@ -132,18 +149,26 @@ char commandGetter(){
         }
         else if(pid == 0) {
             if(compareStrings(command,"ls")){
-                execlp("/bin/ls","ls",NULL);
+                char *argsss[] = {"ls","-l",NULL};
+                execvp(splitted_command[0],splitted_command);
             }
+            // system(command);
+            // if(commandtype == NULL){
+            //     execvp(command,command);
+            // }
+            // else{
+            //     execvp(commandtype,command);
+            // }
         }
         // else if(pid == 0){
         //     execvp(command,command);
         // }
         else {
             wait(NULL);
-            printf("child completed");
+            // printf("child completed");
         }   
-        // free(command);
-        free(commandtype);
+        free(command);
+        // free(commandtype);
     }
 }
 
