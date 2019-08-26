@@ -35,42 +35,38 @@ void impriminaitor(int matrix[9][9]){
 
 void verificator(int matrix[9][9]){
         int ehvalida = 1;
+        //checa as linhas
         for (int i = 0; i < 9; i++){
+                int comparator[9]= {0, 0, 0, 0, 0, 0, 0, 0, 0};
                 for (int j = 0; j < 9; j++){
-                        int comparator[9];
                         if (matrix[i][j] < 1 || matrix[i][j] > 9){
-                             
                                 ehvalida = 0;
                         }
                         else{
                                 for (int x = 0; x < 9; x++){
-                                        if (matrix[i][j] == comparator[x]){
-                                              
+                                        if (matrix[i][j] == comparator[x]){ 
                                                 ehvalida = 0;
                                         }
-                                }
-                        comparator[j] = matrix[i][j];        
+                                }       
                         }
-                          
+                        comparator[j] = matrix[i][j];    
                 }
         }
+        //checa as colunas
         for (int i = 0; i < 9; i++){
+                int comparator[9]= {0, 0, 0, 0, 0, 0, 0, 0, 0};
                 for (int j = 0; j < 9; j++){
-                        int comparator[9];
                         if (matrix[j][i] < 1 || matrix[j][i] > 9){
-                               
                                 ehvalida = 0;
                         }
                         else{
                                 for (int x = 0; x < 9; x++){
-                                        if (matrix[j][i] == comparator[x]){
-                                                
+                                        if (matrix[j][i] == comparator[x]){  
                                                 ehvalida = 0;
                                         }
-                                }
-                        comparator[i] = matrix[j][i];        
+                                }                             
                         }
-                          
+                        comparator[i] = matrix[j][i];    
                 }
         }
         if (ehvalida == 0){
