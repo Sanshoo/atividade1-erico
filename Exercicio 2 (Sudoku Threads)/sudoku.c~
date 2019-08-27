@@ -13,7 +13,9 @@ int lesudoku[9][9] = {
  {2, 8, 5, 4, 7, 3, 9, 1, 6},
 };
 
-void verificator(int matrix[9][9]);
+void verificatorL(int matrix[9][9]);
+
+void verificatorC(int matrix[9][9]);
 
 void impriminaitor(int matrix[9][9]);
  
@@ -21,7 +23,8 @@ int main()
 {
         impriminaitor(lesudoku);
         printf("\n");
-        verificator(lesudoku);
+        verificatorL(lesudoku);
+        verificatorC(lesudoku);
 }
 
 void impriminaitor(int matrix[9][9]){

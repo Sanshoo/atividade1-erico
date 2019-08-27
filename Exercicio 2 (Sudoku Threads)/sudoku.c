@@ -13,7 +13,9 @@ int lesudoku[9][9] = {
  {2, 8, 5, 4, 7, 3, 9, 1, 6},
 };
 
-void verificator(int matrix[9][9]);
+void verificatorL(int matrix[9][9]);
+
+void verificatorC(int matrix[9][9]);
 
 void impriminaitor(int matrix[9][9]);
  
@@ -21,7 +23,8 @@ int main()
 {
         impriminaitor(lesudoku);
         printf("\n");
-        verificator(lesudoku);
+        verificatorL(lesudoku);
+        verificatorC(lesudoku);
 }
 
 void impriminaitor(int matrix[9][9]){
@@ -33,7 +36,7 @@ void impriminaitor(int matrix[9][9]){
         }
 }
 
-void verificator(int matrix[9][9]){
+void verificatorL(int matrix[9][9]){
         int ehvalida = 1;
         //checa as linhas
         for (int i = 0; i < 9; i++){
@@ -52,6 +55,16 @@ void verificator(int matrix[9][9]){
                         comparator[j] = matrix[i][j];    
                 }
         }
+        if (ehvalida == 0){
+                printf("A matriz não é válida!");
+        }
+        else if (ehvalida == 1){
+                printf("A matriz é válida!");
+        }
+}
+
+void verificatorC(int matrix[9][9]){
+        int ehvalida = 1;
         //checa as colunas
         for (int i = 0; i < 9; i++){
                 int comparator[9]= {0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -76,3 +89,5 @@ void verificator(int matrix[9][9]){
                 printf("A matriz é válida!");
         }
 }
+       
+        
