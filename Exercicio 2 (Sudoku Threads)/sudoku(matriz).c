@@ -1,5 +1,20 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
+#define SUB_MATRIX_NUM 9
+
+typedef struct{
+    int x;
+    int y;
+    int value;
+}params;
+
+typedef struct{
+    int values[SUB_MATRIX_NUM];
+    params start;
+    params end;
+}sub_matrix;
 
 int lesudoku[9][9] = {
  {6, 2, 4, 5, 3, 9, 1, 8, 7},
@@ -13,48 +28,92 @@ int lesudoku[9][9] = {
  {2, 8, 5, 4, 7, 3, 9, 1, 6},
 };
 
-void impriminaitor(int matrix[9][9]);
-void verificar(int matrix[9][9]);
- 
-int main()
+//função para capturar os valores de uma submatriz a partir da posicao do valor inicial
+int *sub_matrix_catcher(params *init)
 {
-        impriminaitor(lesudoku);
-        printf("\n");
-		verificar(lesudoku);
+    int *result = NULL;//resultado inicial
+    int parse = sqrt(SUB_MATRIX_NUM);
+    //Checagem da posicao, para certificar que esta dentro do range
+    if((init -> y <= (SUB_MATRIX_NUM - parse)) 
+        && (init -> x <= SUB_MATRIX_NUM - parse)){ 
+        // int values[SUB_MATRIX_NUM]; Causando problemas
+        int *values = (int *)malloc(sizeof(int) * SUB_MATRIX_NUM);//Alocacao da lista
+        int count = 0;
+        for(int i = 0;i < parse;i++){
+            for(int j = 0;j < parse;j++){
+                values[count] = lesudoku [init-> y + i][init -> x + j];
+                count++;
+            }
+        }
+        result = values;
+    }
+    return result;
 }
 
-void impriminaitor(int matrix[9][9]){
-        for (int i = 0; i < 9; i ++){
-                for (int j = 0; j < 9; j++){
-                        printf("%i ", matrix[i][j]);
+// //função para capturar os valores de uma submatriz a partir da posicao do valor inicial
+// int *sub_matrix_catcher(params *init){
+//     int *result = NULL;//resultado inicial
+//     //Checagem da posicao, para certificar que esta dentro do range
+//     if((init -> y <= (SUB_MATRIX_NUM - 3)) && (init -> x <= SUB_MATRIX_NUM - 3 )){ 
+//         params *end = (params *)malloc(sizeof(params));//alocacao de um novo parametro
+//         end -> x = (init -> x) + 2;
+//         end -> y = (init -> x) + 2;
+//         int x = 0,y = 0;
+//         int values[9];
+//         int count = 0;
+//         for(int i = 0;i < 3;i++){
+//             for(int j = 0;j < 3;j++){
+//                 values[count] = lesudoku [init-> y + i][init -> x + j];
+//                 count++;
+//             }
+//         }
+//         result = values;
+//         free(end);
+//     }
+//     return result;
+// }
+
+int verify_sub_matrix_values(int list[])
+{
+    int result = 1;
+    if (list == NULL) result = 0;
+    else {
+        for(int a = 0;a < SUB_MATRIX_NUM;a++){
+            if((list[a] > 9) || (list[a] <= 0)){
+                result = 0;
+                break;
+            }
+            else {
+                for(int b = (a + 1);b < SUB_MATRIX_NUM;b++){
+                    if(list[b] == list[a]){
+                        result = 0;
+                        break;
+                    }
                 }
-                printf("\n");
+            }
         }
+    }
+    return result;
 }
 
-void verificar(int matrix[9][9]){
-	int validar;
-	int comparar[3][3] ={0,0,0,0,0,0,0,0,0};
-		for (int i = 0; i < 3; i ++){
-                for (int j = 0; j < 3; j++){
-                        if (matrix[i][j] < 1 || matrix[i][j] > 9){
-                                validar = 0;
-                        }
-                        else{
-                                for (int x = 0; x < 9; x++){
-									for(int y = 0; y < 9; y++){
-                                        if (matrix[i][j] == comparar[x][y]){ 
-                                                validar = 1;
-                                        }}
-                                }       
-                }
 
-}
-}
- if (validar == 0){
-                printf("A matriz não é válida!");
+
+
+int main(void){
+    params *test = (params *)malloc(sizeof(params));
+    test -> x = 3;
+    test -> y = 3;  
+    int *list = sub_matrix_catcher(test);
+    for(int i = 0; i<9;i++){
+        if(list != NULL){
+            printf("%d ", list[i]);
         }
-        else if (validar == 1){
-                printf("A matriz é válida!");
-        }
+    }
+    int valid = verify_sub_matrix_values(list); 
+    if(valid == 1){
+        printf("\n Matriz valida");
+    }
+    free(test);
+    free(list);
+    return 0;
 }
