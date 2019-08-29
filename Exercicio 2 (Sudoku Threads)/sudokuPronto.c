@@ -107,7 +107,7 @@ int main(void){
             pointer -> x = j;
             pointer -> y = i;
             //Criacao de uma nova thread com a chamada a uma funcao e passando as coordenadas como argumento
-            thread_response = pthread_create(&threads[count],NULL,matrix_runner,pointer);
+            thread_response = pthread_create(&threads[count],NULL,(void *)matrix_runner,pointer);
             if(thread_response == 0) printf("Thread %d ok -> ",count + 1);
             //Colocando a thread atual para esperar o retorno da ultima
             pthread_join(threads[count++],NULL);
@@ -119,9 +119,9 @@ int main(void){
 
         pthread_t thread_L, thread_C;
 
-        pthread_create(&thread_L,NULL,verificatorL,pointer);
+        pthread_create(&thread_L,NULL,(void *)verificatorL,pointer);
         printf("\n");
-        pthread_create(&thread_C,NULL,verificatorC,pointer);
+        pthread_create(&thread_C,NULL,(void *)verificatorC,pointer);
 
         pthread_join(thread_L,NULL);
         pthread_join(thread_C,NULL);
