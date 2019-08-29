@@ -11,12 +11,6 @@ typedef struct{
     int value;
 }params;
 
-// typedef struct{
-//     int values[SUB_MATRIX_NUM];
-//     params start;
-//     params end;
-// }sub_matrix;
-
 int lesudoku[9][9] = {
  {6, 2, 4, 5, 3, 9, 1, 8, 7},
  {5, 1, 9, 7, 2, 8, 6, 3, 4},
@@ -84,7 +78,7 @@ void *matrix_runner(params *pointer){
  
     int *values = sub_matrix_catcher(pointer);
     result = verify_sub_matrix_values(values);
-    printf("(%d %d)",pointer -> x,pointer -> y);
+    printf("(%d %d)",pointer -> y,pointer -> x);
 
     free(values);
 }
@@ -106,8 +100,8 @@ int main(void){
     for(int i = 0;i < SUB_MATRIX_NUM;i+=3){
         for(int j = 0;j < SUB_MATRIX_NUM;j+=3){
             //Novas coordenadas
-            pointer -> x = i;
-            pointer -> y = j;
+            pointer -> x = j;
+            pointer -> y = i;
             //Criacao de uma nova thread com a chamada a uma funcao e passando as coordenadas como argumento
             thread_response = pthread_create(&threads[count],NULL,matrix_runner,pointer);
             //Colocando a thread atual para esperar o retorno da ultima
