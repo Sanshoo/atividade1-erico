@@ -11,6 +11,12 @@ typedef struct{
     int value;
 }params;
 
+// typedef struct{
+//     int values[SUB_MATRIX_NUM];
+//     params start;
+//     params end;
+// }sub_matrix;
+
 int lesudoku[9][9] = {
  {6, 2, 4, 5, 3, 9, 1, 8, 7},
  {5, 1, 9, 7, 2, 8, 6, 3, 4},
@@ -31,11 +37,11 @@ int *sub_matrix_catcher(params *init)
     //Checagem da posicao, para certificar que esta dentro do range
     if((init -> y <= (SUB_MATRIX_NUM - parse)) 
         && (init -> x <= SUB_MATRIX_NUM - parse)){ 
-        // int values[SUB_MATRIX_NUM] = {0,0,0,0,0,0,0,0,0}; //Causando problemas
         int *values = (int *)malloc(sizeof(int) * SUB_MATRIX_NUM);//Alocacao da lista
         int count = 0;
         for(int i = 0;i < parse;i++){
             for(int j = 0;j < parse;j++){
+                //Capturando os valores presentes nas posicoes (x + j,y + i)
                 values[count] = lesudoku [init-> y + i][init -> x + j];
                 count++;
             }
@@ -45,11 +51,13 @@ int *sub_matrix_catcher(params *init)
     return result;
 }
 
+//Funcao para verificar os valores presentes 
 int verify_sub_matrix_values(int list[])
 {
     int result = 1;
     if (list == NULL) result = 0;
     else {
+        //[a,b,...] -> [a,...,b] -> [...,a,b,...] -> [...,a,...,b] -> ...
         for(int a = 0;a < SUB_MATRIX_NUM;a++){
             if((list[a] > 9) || (list[a] <= 0)){
                 result = 0;
@@ -65,41 +73,51 @@ int verify_sub_matrix_values(int list[])
             }
         }
     }
-    if(result == 1) printf("Valida:");
-    else printf("Invalida:");
+    if(result == 1) printf("\nValida:");
+    else printf("\nInvalida:");
     return result;
 }
 
+//Funcao que reune a captura dos valores da submatriz e a verifica-a
 void *matrix_runner(params *pointer){
     int result = 0;
+ 
     int *values = sub_matrix_catcher(pointer);
     result = verify_sub_matrix_values(values);
     printf("(%d %d)",pointer -> x,pointer -> y);
-    printf("\n");
+
     free(values);
 }
 
+
 int main(void){
 
+    //Alocando um apontador de posicao do tipo params
     params *pointer = (params *)malloc(sizeof(params));
+    //Definindo as coordenadas iniciais
     pointer -> x = 0;
     pointer -> y = 0;
-    int parse = sqrt(SUB_MATRIX_NUM);
-
+    //Criando uma lista de threads
     pthread_t threads[SUB_MATRIX_NUM];
+    //Tid da thread atual
     int thread_response;
-    //     //gcc <nome do arquivo>.c -pthread
-
-   
+    //Posicao que a thread ira ficar na lista
+    int count = 0;
     for(int i = 0;i < SUB_MATRIX_NUM;i+=3){
         for(int j = 0;j < SUB_MATRIX_NUM;j+=3){
-            pointer -> x = j;
-            pointer -> y = i;
-            thread_response = pthread_create(&threads[i],NULL,matrix_runner,pointer);
-            pthread_join(threads[i],NULL);
+            //Novas coordenadas
+            pointer -> x = i;
+            pointer -> y = j;
+            //Criacao de uma nova thread com a chamada a uma funcao e passando as coordenadas como argumento
+            thread_response = pthread_create(&threads[count],NULL,matrix_runner,pointer);
+            //Colocando a thread atual para esperar o retorno da ultima
+            pthread_join(threads[count++],NULL);
         }
     }
-    pthread_exit((void *)NULL);
+
+    //Terminando a execucao das threads
+    pthread_exit(threads);
+    //Liberando o ponteiro para as coordenadas
     free(pointer);
 
     return 0;
