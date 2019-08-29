@@ -67,18 +67,18 @@ int verify_sub_matrix_values(int list[])
             }
         }
     }
-    if(result == 1) printf("\nValida:");
-    else printf("\nInvalida:");
+    if(result == 1) printf("Valida:");
+    else printf("Invalida:");
     return result;
 }
 
 //Funcao que reune a captura dos valores da submatriz e a verifica-a
 void *matrix_runner(params *pointer){
     int result = 0;
- 
+    int parse = sqrt(SUB_MATRIX_NUM);
     int *values = sub_matrix_catcher(pointer);
     result = verify_sub_matrix_values(values);
-    printf("(%d %d)",pointer -> y,pointer -> x);
+    printf("(%d %d)\n",(pointer -> y / parse), (pointer -> x / parse));
 
     free(values);
 }
@@ -104,6 +104,7 @@ int main(void){
             pointer -> y = i;
             //Criacao de uma nova thread com a chamada a uma funcao e passando as coordenadas como argumento
             thread_response = pthread_create(&threads[count],NULL,matrix_runner,pointer);
+            if(thread_response == 0) printf("Thread %d ok -> ",count + 1);
             //Colocando a thread atual para esperar o retorno da ultima
             pthread_join(threads[count++],NULL);
         }
